@@ -1150,14 +1150,12 @@
     monster.mesh.rotation.z = -Math.PI / 2 + angle;
   }
 
-  // Thêm biến global để lưu thông tin user
   let currentUser = {
     username: "User On Web",
     platform: "Web",
     id: null,
   };
 
-  // Hàm khởi tạo để lấy thông tin user
   function initUser() {
     const tg = window.Telegram?.WebApp;
     if (tg) {
@@ -1172,7 +1170,6 @@
       }
     }
 
-    // Hiển thị thông tin user trên UI
     const userInfoDiv = document.createElement("div");
     userInfoDiv.id = "userInfo";
     userInfoDiv.style.position = "absolute";
@@ -1759,15 +1756,12 @@ Play again to beat your score!
   }
 `;
 
-        // Thêm styles vào document
         const styleSheet = document.createElement("style");
         styleSheet.innerText = styles;
         document.head.appendChild(styleSheet);
 
-        // Thêm user info vào document
         document.body.appendChild(userInfo);
 
-        // Điều chỉnh vị trí nếu là Telegram Mini App và đang mở rộng
         if (
           window.Telegram &&
           window.Telegram.WebApp &&
