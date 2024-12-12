@@ -1,0 +1,249 @@
+/*******************************
+  Table of Contents
+
+  1.0 General Styles
+
+*******************************/
+
+/**********************************/
+/******* 1.0 General Styles *******/
+/**********************************/
+@import url("css.css");
+
+body {
+  margin: 0;
+  background: #dbe6e6;
+}
+
+#world {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #dbe6e6;
+  overflow: hidden;
+}
+
+#logo {
+  position: absolute;
+  z-index: 10;
+  left: 40px;
+}
+
+#logo img {
+  width: 32%;
+}
+
+#gameoverInstructions {
+  position: absolute;
+  font-family: Neue Haas Unica, PingFang SC, 微软雅黑, Microsoft Yahei, 宋体,
+    Helvetica, Arial, simsun !important;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 60px;
+  text-align: center;
+  color: #ffc5a2;
+  opacity: 0;
+  left: 50%;
+  top: 35%;
+  width: 100%;
+  -webkit-transform: translate(-50%, -100%);
+  transform: translate(-50%, -100%);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+
+#gameoverInstructions.show {
+  opacity: 1;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  -webkit-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+
+#dist {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  -webkit-transform: translate(-50%, 0%);
+  transform: translate(-50%, 0%);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.label {
+  position: relative;
+  font-family: "Voltaire", sans-serif;
+  text-transform: uppercase;
+  color: #ffa873;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+#distValue {
+  position: relative;
+  text-transform: uppercase;
+  color: #dc5f45;
+  font-size: 36px;
+  font-family: "Voltaire";
+  text-align: center;
+  width: 100%;
+  line-height: 1.5;
+}
+
+#credits {
+  position: absolute;
+  width: 100%;
+  margin: auto;
+  bottom: 0;
+  margin-bottom: 20px;
+  font-family: "Voltaire", sans-serif;
+  color: #544027;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#credits a {
+  color: #544027;
+}
+
+#credits a:hover {
+  color: #dc5f45;
+}
+
+#instructions {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  margin: auto;
+  margin-bottom: 20px;
+  font-family: "Voltaire", sans-serif;
+  color: #dc5f45;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.lightInstructions {
+  color: #5f9042;
+}
+
+.nav {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: 30px !important;
+  right: 40px !important;
+}
+
+@media (max-width: 768px) {
+  #logo {
+    position: fixed;
+    text-align: center;
+    margin: 8px 0;
+    left: 8px;
+  }
+
+  #logo img {
+    width: 30%;
+  }
+}
+
+@media (max-width: 450px) {
+  #logo img {
+    width: 50%;
+  }
+}
+
+#instructions-center {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  margin: auto;
+  top: 34px;
+  font-family: "Voltaire", sans-serif;
+  color: #dc5f45;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .nav-mob {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 60px 0;
+  }
+
+  .nav-item {
+    font-size: 18px;
+    color: #8d929d;
+    font-weight: 500;
+    padding: 5px 0 !important;
+  }
+}
+
+@media (max-width: 425px) {
+  .nav-mob {
+    padding: 0 0;
+  }
+
+  .nav-item {
+    padding: 6px 0 !important;
+    font-size: 10px;
+    line-height: 1;
+  }
+}
+
+.wrapper-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.load {
+  width: 100%;
+  height: 100%;
+  background: #dbe6e5;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999999999999999;
+  display: block;
+  overflow: hidden;
+}
+
+.load img {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -75px;
+  margin-left: -40px;
+}
