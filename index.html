@@ -460,6 +460,146 @@
     });
   </script>
 
+  <script>
+    const db = firebase.firestore();
+
+    function showUserProfile() {
+      const profilePanel = document.createElement('div');
+      profilePanel.className = 'profile-panel';
+
+      const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || null;
+
+      const getUserStats = async () => {
+        if (!tgUser?.id) return null;
+        const userDoc = await db.collection('users').doc(String(tgUser.id)).get();
+        return userDoc.exists ? userDoc.data() : null;
+      };
+
+      getUserStats().then(stats => {
+        profilePanel.innerHTML = `
+          <div class="profile-content">
+            <div class="profile-header">
+              <h2>Player Profile</h2>
+              <button class="close-profile">&times;</button>
+            </div>
+            
+            <div class="user-info">
+              <div class="avatar">
+                ${tgUser?.photo_url ?
+            `<img src="${tgUser.photo_url}" alt="avatar"/>` :
+            `<div class="avatar-placeholder">${tgUser?.first_name?.[0] || 'U'}</div>`
+          }
+              </div>
+              <div class="user-details">
+                <p class="username">${tgUser?.first_name || 'User'}</p>
+                <p class="user-id">ID: ${tgUser?.id || 'Web User'}</p>
+              </div>
+            </div>
+
+            <div class="game-stats">
+              <div class="stat-item">
+                <span class="stat-label">High Score</span>
+                <span class="stat-value">${stats?.highScore || 0}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Games Played</span>
+                <span class="stat-value">${stats?.gamesPlayed || 0}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Current Level</span>
+                <span class="stat-value">${level}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(profilePanel);
+
+        const styles = `
+          .profile-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            z-index: 1000;
+            min-width: 300px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(220, 95, 69, 0.3);
+            font-family: 'Voltaire', sans-serif;
+          }
+          .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #dc5f45;
+          }
+          .close-profile {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #dc5f45;
+          }
+          .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+          }
+          .avatar img, .avatar-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+          }
+          .avatar-placeholder {
+            background: #dc5f45;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+          }
+          .game-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+          }
+          .stat-item {
+            background: rgba(220, 95, 69, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+          }
+          .stat-label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+          }
+          .stat-value {
+            display: block;
+            color: #dc5f45;
+            font-size: 20px;
+            font-weight: bold;
+          }
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = styles;
+        document.head.appendChild(styleSheet);
+
+        document.querySelector('.close-profile').addEventListener('click', () => {
+          profilePanel.remove();
+        });
+      });
+    }
+
+    document.querySelector('.player-tag').addEventListener('click', showUserProfile);
+  </script>
+
 </body>
 
 </html>
