@@ -1591,13 +1591,16 @@ Play again to beat your score!
                   <div class="user-details">
                     <p class="username">${tgUser?.first_name || "Web User"}</p>
                     <p class="user-id">ID: ${tgUser.id}</p>
+                    <p class="user-id">Deposit</p>
                   </div>
                 </div>
 
                 <div class="game-stats">
                   <div class="stat-item">
                     <span class="stat-label">High Score:</span>
+                        
                     <span class="stat-value">${stats?.Score ?? "No data"}</span>
+                      <span class="stat-value">Claim</span>
                   </div>
                   <div class="stat-item">
                     <span class="stat-label">Games Played:</span>
