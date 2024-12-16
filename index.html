@@ -424,6 +424,22 @@
     }
   </script>
 
+  <script>
+    try {
+      if (window.Telegram && window.Telegram.WebApp) {
+        if (window.Telegram.WebApp.isVersionAtLeast('8.0')) {
+          window.Telegram.WebApp.requestFullscreen();
+        }
+      }
+    } catch (e) {
+      if (e.message === 'WebAppMethodUnsupported') {
+        console.warn('Fullscreen mode is not supported in this Telegram version');
+      } else {
+        console.error(e);
+      }
+    }
+  </script>
+
 </body>
 
 </html>
