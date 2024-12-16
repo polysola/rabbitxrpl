@@ -98,6 +98,7 @@
   background: rgba(220, 95, 69, 0.1);
   color: #dc5f45;
   transform: rotate(90deg);
+  border-radius: 50%;
 }
 
 .user-info {
@@ -397,4 +398,7 @@
     height: 20px;
     font-size: 14px;
   }
+}
+.close-profile {
+  margin-top: -10px;
 }
