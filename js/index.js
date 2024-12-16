@@ -97,6 +97,13 @@
 
   var PI = Math.PI;
 
+  // Thêm biến mới để lưu vị trí camera ban đầu
+  var initialCameraPosGame = {
+    x: 0,
+    y: 45, // Cao hơn để nhìn xuống
+    z: 200, // Xa hơn để thấy toàn cảnh
+  };
+
   //INIT THREE JS, SCREEN AND MOUSE EVENTS
 
   function initScreenAnd3D() {
@@ -110,7 +117,7 @@
     scene.fog = new THREE.Fog(0xd6eae6, 160, 350);
 
     aspectRatio = WIDTH / HEIGHT;
-    fieldOfView = 50;
+    fieldOfView = WIDTH <= 768 ? 70 : 50;
     nearPlane = 1;
     farPlane = 2000;
     camera = new THREE.PerspectiveCamera(
@@ -119,10 +126,12 @@
       nearPlane,
       farPlane
     );
-    camera.position.x = 0;
-    camera.position.z = cameraPosGame;
-    camera.position.y = 30;
-    camera.lookAt(new THREE.Vector3(0, 30, 0));
+
+    // Set vị trí camera ban đầu
+    camera.position.x = initialCameraPosGame.x;
+    camera.position.y = initialCameraPosGame.y;
+    camera.position.z = initialCameraPosGame.z;
+    camera.lookAt(new THREE.Vector3(0, 20, 0));
 
     renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -163,8 +172,9 @@
   }
 
   function handleMouseDown(event) {
-    if (gameStatus === "play") hero.jump();
-    else if (gameStatus === "readyToReplay") {
+    if (gameStatus === "play") {
+      hero.jump();
+    } else if (gameStatus === "readyToReplay") {
       replay();
     }
   }
@@ -370,6 +380,10 @@
         object.receiveShadow = true;
       }
     });
+
+    if (isMobile()) {
+      this.mesh.scale.set(0.8, 0.8, 0.8);
+    }
   };
 
   BonusParticles = function () {
@@ -697,6 +711,10 @@
     this.pawBR.castShadow = true;
 
     this.body.rotation.y = Math.PI / 2;
+
+    if (isMobile()) {
+      this.mesh.scale.set(0.7, 0.7, 0.7);
+    }
   };
 
   Monster.prototype.run = function () {
@@ -1773,5 +1791,10 @@ Play again to beat your score!
         }
       }
     }
+  }
+
+  // Thêm hàm kiểm tra mobile
+  function isMobile() {
+    return window.innerWidth <= 768;
   }
 })();
