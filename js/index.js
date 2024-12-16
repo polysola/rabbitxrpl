@@ -1541,7 +1541,6 @@ Play again to beat your score!
     //setInterval(hero.blink.bind(hero), 3000);
     gameOver();
 
-    // Thêm xử lý player-tag
     const playerTag = document.querySelector(".player-tag");
     if (playerTag) {
       playerTag.addEventListener("click", function (e) {
@@ -1573,7 +1572,7 @@ Play again to beat your score!
             profilePanel.innerHTML = `
               <div class="profile-content">
                 <div class="profile-header">
-                  <h2>Player Profile</h2>
+                  <div>Player Profile</div>
                   <button class="close-profile">&times;</button>
                 </div>
                 
