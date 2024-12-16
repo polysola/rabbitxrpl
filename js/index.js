@@ -1540,6 +1540,100 @@ Play again to beat your score!
 
     //setInterval(hero.blink.bind(hero), 3000);
     gameOver();
+
+    // Thêm xử lý player-tag
+    const playerTag = document.querySelector(".player-tag");
+    if (playerTag) {
+      playerTag.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove existing profile panel if any
+        const existingPanel = document.querySelector(".profile-panel");
+        if (existingPanel) {
+          existingPanel.remove();
+        }
+
+        const profilePanel = document.createElement("div");
+        profilePanel.className = "profile-panel";
+
+        // Get user info
+        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || {
+          first_name: "Web User",
+          id: Date.now().toString(),
+        };
+
+        // Get game stats from Firebase
+        db.collection("Database")
+          .doc(String(tgUser.id))
+          .get()
+          .then((doc) => {
+            const stats = doc.exists ? doc.data() : null;
+
+            profilePanel.innerHTML = `
+              <div class="profile-content">
+                <div class="profile-header">
+                  <h2>Player Profile</h2>
+                  <button class="close-profile">&times;</button>
+                </div>
+                
+                <div class="user-info">
+                  <div class="avatar">
+                    ${
+                      tgUser?.photo_url
+                        ? `<img src="${tgUser.photo_url}" alt="avatar"/>`
+                        : `<div class="avatar-placeholder">${
+                            tgUser?.first_name?.[0] || "U"
+                          }</div>`
+                    }
+                  </div>
+                  <div class="user-details">
+                    <p class="username">${tgUser?.first_name || "Web User"}</p>
+                    <p class="user-id">ID: ${tgUser.id}</p>
+                  </div>
+                </div>
+
+                <div class="game-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">High Score:</span>
+                    <span class="stat-value">${stats?.Score ?? "No data"}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Games Played:</span>
+                    <span class="stat-value">${
+                      stats?.gamesPlayed ?? "No data"
+                    }</span>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            document.body.appendChild(profilePanel);
+
+            // Close button handler
+            const closeBtn = profilePanel.querySelector(".close-profile");
+            if (closeBtn) {
+              closeBtn.addEventListener("click", () => {
+                profilePanel.remove();
+              });
+            }
+
+            // Close when clicking outside
+            document.addEventListener("click", function closePanel(e) {
+              if (
+                !e.target.closest(".profile-panel") &&
+                !e.target.closest(".player-tag")
+              ) {
+                profilePanel.remove();
+                document.removeEventListener("click", closePanel);
+              }
+            });
+          })
+          .catch((error) => {
+            console.error("Error getting Firebase data:", error);
+          });
+      });
+    }
   }
 
   function resetGame() {
@@ -1793,7 +1887,6 @@ Play again to beat your score!
     }
   }
 
-  // Thêm hàm kiểm tra mobile
   function isMobile() {
     return window.innerWidth <= 768;
   }

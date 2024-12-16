@@ -204,6 +204,7 @@
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
       z-index: 1001;
       min-width: 300px;
+      pointer-events: auto;
     }
 
     .profile-content {
@@ -226,6 +227,18 @@
       padding: 10px;
       background: rgba(220, 95, 69, 0.1);
       border-radius: 8px;
+    }
+
+    .avatar-placeholder {
+      width: 40px;
+      height: 40px;
+      background: #dc5f45;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -454,106 +467,7 @@
     });
   </script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      console.log("DOM Content Loaded");
 
-      // Initialize Firebase first
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      }
-
-      // Get the player tag element
-      const playerTag = document.querySelector('.player-tag');
-      console.log("Player tag element:", playerTag);
-
-      if (playerTag) {
-        playerTag.addEventListener('click', function (e) {
-          console.log("Player tag clicked");
-          e.preventDefault();
-          e.stopPropagation();
-
-          const profilePanel = document.createElement('div');
-          profilePanel.className = 'profile-panel';
-
-          const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || {
-            first_name: "Web User",
-            id: "web_user"
-          };
-          console.log("Telegram User:", tgUser);
-
-          // Get game stats from Firebase
-          db.collection('Database').doc(String(tgUser.id)).get()
-            .then(doc => {
-              console.log("Firebase data:", doc.data());
-              const stats = doc.exists ? doc.data() : null;
-
-              profilePanel.innerHTML = `
-                <div class="profile-content">
-                  <div class="profile-header">
-                    <h2>Player Profile</h2>
-                    <button class="close-profile">&times;</button>
-                  </div>
-                  
-                  <div class="user-info">
-                    <div class="avatar">
-                      ${tgUser?.photo_url ?
-                  `<img src="${tgUser.photo_url}" alt="avatar"/>` :
-                  `<div class="avatar-placeholder">${tgUser?.first_name?.[0] || 'U'}</div>`
-                }
-                    </div>
-                    <div class="user-details">
-                      <p class="username">${tgUser?.first_name || 'Web User'}</p>
-                      <p class="user-id">${tgUser?.id ? `ID: ${tgUser.id}` : 'No ID'}</p>
-                    </div>
-                  </div>
-
-                  <div class="game-stats">
-                    <div class="stat-item">
-                      <span class="stat-label">High Score</span>
-                      <span class="stat-value">${stats?.Score ?? 'No data'}</span>
-                    </div>
-                    <div class="stat-item">
-                      <span class="stat-label">Games Played</span>
-                      <span class="stat-value">${stats?.gamesPlayed ?? 'No data'}</span>
-                    </div>
-                    <div class="stat-item">
-                      <span class="stat-label">Current Level</span>
-                      <span class="stat-value">${level || 'No data'}</span>
-                    </div>
-                  </div>
-                </div>
-              `;
-
-              document.body.appendChild(profilePanel);
-
-              // Close button handler
-              const closeBtn = profilePanel.querySelector('.close-profile');
-              if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                  console.log("Close button clicked");
-                  profilePanel.remove();
-                });
-              }
-            })
-            .catch(error => {
-              console.error("Error getting Firebase data:", error);
-            });
-        });
-      }
-
-      // Game controls
-      document.addEventListener("mousedown", function (e) {
-        if (!e.target.closest('.profile-panel') && !e.target.closest('.player-tag')) {
-          if (gameStatus === "play") {
-            hero.jump();
-          } else if (gameStatus === "readyToReplay") {
-            replay();
-          }
-        }
-      });
-    });
-  </script>
 
 </body>
 
