@@ -440,6 +440,26 @@
     }
   </script>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.Telegram && window.Telegram.WebApp) {
+        // Expand webapp to maximum available height
+        window.Telegram.WebApp.expand();
+
+        // Request fullscreen if supported (version >= 8.0)
+        if (window.Telegram.WebApp.isVersionAtLeast('8.0')) {
+          window.Telegram.WebApp.requestFullscreen();
+        }
+
+        // Enable closing confirmation to prevent accidental exits
+        window.Telegram.WebApp.enableClosingConfirmation();
+
+        // Disable vertical swipes to prevent interference with app navigation
+        window.Telegram.WebApp.disableVerticalSwipes();
+      }
+    });
+  </script>
+
 </body>
 
 </html>
