@@ -1270,7 +1270,7 @@ Play again to beat your score!
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            chat_id: "-1002279832900",
+            chat_id: "-1002413875524",
             text: message,
           }),
         }
