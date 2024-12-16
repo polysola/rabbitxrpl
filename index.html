@@ -186,6 +186,48 @@
       background-color: #cc884c !important;
     }
   </style>
+  <style>
+    .player-tag {
+      cursor: pointer;
+      pointer-events: all;
+      z-index: 1000;
+    }
+
+    .profile-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      min-width: 300px;
+    }
+
+    .profile-content {
+      position: relative;
+    }
+
+    .close-profile {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .stat-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(220, 95, 69, 0.1);
+      border-radius: 8px;
+    }
+  </style>
 </head>
 
 <body class="preloading">
@@ -360,56 +402,8 @@
     let currentPage = 0;
     const pageSize = 5;
 
-    async function getAllUsersAndScores() {
-      document.getElementById('loading').style.display = 'block';
-
-      try {
-        const querySnapshot = await db.collection("Database")
-          .orderBy('Score')
-          .offset(currentPage * pageSize)
-          .limit(pageSize)
-          .get();
-
-        let tableBody = document.getElementById('userData');
 
 
-        if (currentPage === 0) {
-          tableBody.innerHTML = '';
-        }
-
-        querySnapshot.forEach((doc) => {
-          let row = tableBody.insertRow();
-          let cell1 = row.insertCell(0);
-          let cell2 = row.insertCell(1);
-
-
-          const userId = doc.id;
-          const displayUserId = `${userId.substring(0, 4)}...${userId.substring(userId.length - 4)}`;
-
-          cell1.textContent = displayUserId;
-          cell2.textContent = doc.data().Score;
-        });
-
-        document.getElementById('loading').style.display = 'none';
-
-
-        if (querySnapshot.size < pageSize) {
-          document.getElementById('loadMore').style.display = 'none';
-        }
-      } catch (error) {
-        console.error("Error getting documents: ", error);
-        document.getElementById('loading').textContent = 'Err.';
-      }
-    }
-
-    document.getElementById('loadMore').addEventListener('click', () => {
-      currentPage++;
-      getAllUsersAndScores();
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      getAllUsersAndScores();
-    });
   </script>
   <!-- MAKE SURE TO ADD THIS -->
   <script src="js/telegram-web-app.js"></script>
@@ -461,172 +455,103 @@
   </script>
 
   <script>
-    const db = firebase.firestore();
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log("DOM Content Loaded");
 
-    function showUserProfile() {
-      const profilePanel = document.createElement('div');
-      profilePanel.className = 'profile-panel';
-
-      const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || null;
-
-      const getUserStats = async () => {
-        if (!tgUser?.id) return null;
-        try {
-          const userDoc = await db.collection('users').doc(String(tgUser.id)).get();
-          return userDoc.exists ? userDoc.data() : null;
-        } catch (error) {
-          console.error("Error fetching user stats:", error);
-          return null;
-        }
-      };
-
-      getUserStats().then(stats => {
-        profilePanel.innerHTML = `
-          <div class="profile-content">
-            <div class="profile-header">
-              <h2>Player Profile</h2>
-              <button class="close-profile">&times;</button>
-            </div>
-            
-            <div class="user-info">
-              <div class="avatar">
-                ${tgUser?.photo_url ?
-            `<img src="${tgUser.photo_url}" alt="avatar"/>` :
-            `<div class="avatar-placeholder">${tgUser?.first_name?.[0] || 'U'}</div>`
-          }
-              </div>
-              <div class="user-details">
-                <p class="username">${tgUser?.first_name || 'Web User'}</p>
-                <p class="user-id">${tgUser?.id ? `ID: ${tgUser.id}` : 'No ID'}</p>
-              </div>
-            </div>
-
-            <div class="game-stats">
-              <div class="stat-item">
-                <span class="stat-label">High Score</span>
-                <span class="stat-value">${stats?.highScore ?? 'No data'}</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Games Played</span>
-                <span class="stat-value">${stats?.gamesPlayed ?? 'No data'}</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Current Level</span>
-                <span class="stat-value">${level || 'No data'}</span>
-              </div>
-            </div>
-          </div>
-        `;
-
-        document.body.appendChild(profilePanel);
-
-        const styles = `
-          .profile-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            z-index: 1000;
-            min-width: 300px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            border: 2px solid rgba(220, 95, 69, 0.3);
-            font-family: 'Voltaire', sans-serif;
-          }
-          .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            color: #dc5f45;
-          }
-          .close-profile {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #dc5f45;
-          }
-          .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-          }
-          .avatar img, .avatar-placeholder {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 15px;
-          }
-          .avatar-placeholder {
-            background: #dc5f45;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-          }
-          .game-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            text-align: center;
-          }
-          .stat-item {
-            background: rgba(220, 95, 69, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-          }
-          .stat-label {
-            display: block;
-            color: #666;
-            font-size: 14px;
-          }
-          .stat-value {
-            display: block;
-            color: #dc5f45;
-            font-size: 20px;
-            font-weight: bold;
-          }
-          .player-tag {
-            cursor: pointer;
-          }
-          .player-tag:hover {
-            transform: scale(1.05);
-            transition: transform 0.2s ease;
-          }
-        `;
-
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = styles;
-        document.head.appendChild(styleSheet);
-
-        document.querySelector('.close-profile').addEventListener('click', () => {
-          profilePanel.remove();
-        });
-      });
-    }
-
-    document.querySelector('.player-tag').addEventListener('click', showUserProfile);
-  </script>
-
-  <script>
-    document.removeEventListener("mousedown", handleMouseDown);
-
-    const playerTag = document.querySelector('.player-tag');
-    if (playerTag) {
-      playerTag.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showUserProfile();
-      });
-    }
-
-    document.addEventListener("mousedown", (e) => {
-      if (!e.target.closest('.profile-panel') && !e.target.closest('.player-tag')) {
-        handleMouseDown(e);
+      // Initialize Firebase first
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
       }
+
+      // Get the player tag element
+      const playerTag = document.querySelector('.player-tag');
+      console.log("Player tag element:", playerTag);
+
+      if (playerTag) {
+        playerTag.addEventListener('click', function (e) {
+          console.log("Player tag clicked");
+          e.preventDefault();
+          e.stopPropagation();
+
+          const profilePanel = document.createElement('div');
+          profilePanel.className = 'profile-panel';
+
+          const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || {
+            first_name: "Web User",
+            id: "web_user"
+          };
+          console.log("Telegram User:", tgUser);
+
+          // Get game stats from Firebase
+          db.collection('Database').doc(String(tgUser.id)).get()
+            .then(doc => {
+              console.log("Firebase data:", doc.data());
+              const stats = doc.exists ? doc.data() : null;
+
+              profilePanel.innerHTML = `
+                <div class="profile-content">
+                  <div class="profile-header">
+                    <h2>Player Profile</h2>
+                    <button class="close-profile">&times;</button>
+                  </div>
+                  
+                  <div class="user-info">
+                    <div class="avatar">
+                      ${tgUser?.photo_url ?
+                  `<img src="${tgUser.photo_url}" alt="avatar"/>` :
+                  `<div class="avatar-placeholder">${tgUser?.first_name?.[0] || 'U'}</div>`
+                }
+                    </div>
+                    <div class="user-details">
+                      <p class="username">${tgUser?.first_name || 'Web User'}</p>
+                      <p class="user-id">${tgUser?.id ? `ID: ${tgUser.id}` : 'No ID'}</p>
+                    </div>
+                  </div>
+
+                  <div class="game-stats">
+                    <div class="stat-item">
+                      <span class="stat-label">High Score</span>
+                      <span class="stat-value">${stats?.Score ?? 'No data'}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Games Played</span>
+                      <span class="stat-value">${stats?.gamesPlayed ?? 'No data'}</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">Current Level</span>
+                      <span class="stat-value">${level || 'No data'}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              document.body.appendChild(profilePanel);
+
+              // Close button handler
+              const closeBtn = profilePanel.querySelector('.close-profile');
+              if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                  console.log("Close button clicked");
+                  profilePanel.remove();
+                });
+              }
+            })
+            .catch(error => {
+              console.error("Error getting Firebase data:", error);
+            });
+        });
+      }
+
+      // Game controls
+      document.addEventListener("mousedown", function (e) {
+        if (!e.target.closest('.profile-panel') && !e.target.closest('.player-tag')) {
+          if (gameStatus === "play") {
+            hero.jump();
+          } else if (gameStatus === "readyToReplay") {
+            replay();
+          }
+        }
+      });
     });
   </script>
 
