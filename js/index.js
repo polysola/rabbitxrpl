@@ -1522,6 +1522,8 @@ Play again to beat your score!
   window.addEventListener("load", init, false);
 
   function init(event) {
+    userState = checkTelegramWebApp();
+
     initUser();
     initTelegramWebApp();
     initUI();
@@ -1888,5 +1890,50 @@ Play again to beat your score!
 
   function isMobile() {
     return window.innerWidth <= 768;
+  }
+
+  let userState = null;
+
+  function checkTelegramWebApp() {
+    const isTelegramApp = window.Telegram?.WebApp?.initDataUnsafe?.user;
+
+    if (!isTelegramApp) {
+      const popup = document.createElement("div");
+      popup.className = "telegram-popup";
+      popup.innerHTML = `
+        <div class="popup-content">
+          <h2>Welcome!</h2>
+          <p>For the best experience and to save your scores, we recommend playing via Telegram App.</p>
+          <p class="popup-note">You can still play as a guest.</p>
+          <button class="popup-close">Start</button>
+          <a href="https://t.me/rabbitgamexrpl_bot/miniapp"><button class="popup-close">JoinMini App</button></a>
+        </div>
+      `;
+
+      document.body.appendChild(popup);
+
+      if (gameStatus === "play") {
+        gameStatus = "paused";
+      }
+
+      const closeBtn = popup.querySelector(".popup-close");
+      closeBtn.addEventListener("click", () => {
+        popup.remove();
+
+        if (gameStatus === "paused") {
+          gameStatus = "play";
+        }
+      });
+
+      return {
+        isGuest: true,
+        guestId: "guest_" + Date.now(),
+      };
+    }
+
+    return {
+      isGuest: false,
+      user: window.Telegram?.WebApp?.initDataUnsafe?.user,
+    };
   }
 })();

@@ -402,3 +402,86 @@
 .close-profile {
   margin-top: -10px;
 }
+.telegram-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.popup-content {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 90%;
+  width: 320px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: popupFadeIn 0.3s ease;
+}
+
+.popup-content h2 {
+  color: #dc5f45;
+  font-size: 24px;
+  margin: 0 0 15px;
+}
+
+.popup-content p {
+  color: #333;
+  font-size: 16px;
+  margin: 0 0 20px;
+  line-height: 1.4;
+}
+
+.popup-close {
+  background: #dc5f45;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+  background: #c54e35;
+  transform: translateY(-2px);
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .popup-content {
+    width: 280px;
+    padding: 20px;
+  }
+
+  .popup-content h2 {
+    font-size: 20px;
+  }
+
+  .popup-content p {
+    font-size: 14px;
+  }
+
+  .popup-close {
+    padding: 8px 25px;
+    font-size: 14px;
+  }
+}
